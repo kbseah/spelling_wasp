@@ -45,8 +45,25 @@ def show_status(stdscr,game):
     correctwrap = wrap(correctstr, 50)
     for i in range(0,len(correctwrap)):
         stdscr.addstr(15+i,0, correctwrap[i])
-    
-   
+
+def exit_report(stdscr,game):
+    """Report unguessed words and say goodbye"""
+    key, allowed, correctwords, score = game.status()
+    stdscr.hline(0,0,"-",50)
+    stdscr.addstr(1,0, " - - - - - S P E L L I N G  *  W A S P - - - - - ")
+    stdscr.hline(2,0,"-",50)
+    stdscr.addstr(3,0, "Thank you for playing Spelling Wasp")
+    stdscr.addstr(4,0, "Press any key to exit")
+    stdscr.hline(5,0, "-", 50)
+    stdscr.addstr(6,0, "final score: " + str(score))
+    stdscr.hline(7,0, "-", 50)
+    stdscr.addstr(8,0, "These are the words you didn't guess:")
+    unguessedstr = " ".join([word for word in game._solutions if word not in game._usercorrect.keys()])
+    unguessedwrap = wrap(unguessedstr, 50)
+    for i in range(0,len(unguessedwrap)):
+        stdscr.addstr(9+i,0, unguessedwrap[i])
+
+
 def main(stdscr):
     # Read dictionary
     words=[]
@@ -74,13 +91,24 @@ def main(stdscr):
             show_status(stdscr,game)
             stdscr.addstr(9,0, "[shuffle]")
         elif c == curses.KEY_ENTER or c == 10 or c == 13:
-            if len(wordbuffer) == 0: break
+            if len(wordbuffer) == 0: 
+                stdscr.clear()
+                exit_report(stdscr,game)
+                d = stdscr.getch()
+                break
             joinword = "".join(wordbuffer)
             stdscr.addstr(8,4, joinword)
             wordbuffer = []
             result, message, unguessed = game.process_guess(joinword)
             stdscr.addstr(9,0, message)
             show_status(stdscr,game)
+            if unguessed == 0:
+                stdscr.clear()
+                stdscr.addstr(1,0, "bzzzz bzzzz bzzzz YOU GUESSED ALL THE WORDS! bzzz bzzz bzzz")
+                stdscr.addstr(2,0, "Press any key to exit")
+                show_status(stdscr,game)
+                d = stdscr.getch()
+                break
         else:
             wordbuffer = []
             stdscr.addstr(8,4, "".join(wordbuffer))
