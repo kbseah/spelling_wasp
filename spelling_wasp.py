@@ -6,7 +6,7 @@ import string
 import json # for dump
 from collections import defaultdict
 
-parser = argparse.ArgumentParser(description="Spelling Wasp! A venomous clone of the NY Time's Spelling Bee",
+parser = argparse.ArgumentParser(description="Spelling Wasp! A venomous clone of the NY Times Spelling Bee",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--dict", default="/usr/share/dict/web2", help="Path to dictionary file")
 parser.add_argument("-n", default=7, help="Number of letters to play")
@@ -45,11 +45,11 @@ def discourage():
     discouragement = ["Nope", "No", "Wrong", "Sorry", "Meh", "Are you kidding me?"]
     return(random.sample(discouragement,1)[0])
 
-class SpellingBee(object):
-    """SpellingBee game"""
+class SpellingWasp(object):
+    """SpellingWasp game"""
 
     def __init__(self, length, min_solutions, min_wordlength, wordlist):
-        """Initialize new SpellingBee object, comprising:
+        """Initialize new SpellingWasp object, comprising:
         - Key letter 
         - Other allowed letters
         - list of solutions
@@ -69,6 +69,8 @@ class SpellingBee(object):
         self._usercorrect = defaultdict(int)
         self._userwrong = defaultdict(int)
 
+    SEPARATOR = "--------------------------------------------------------------"
+
     def dump(self):
         print("key:\t" + self._key)
         print("allowed:\t" + self._allowed)
@@ -80,46 +82,65 @@ class SpellingBee(object):
 
     def status(self):
         """Display current status of the game"""
-        print("--------------------------------------------------------------")
+        print(SpellingWasp.SEPARATOR)
         print("Letters: *** " + self._key + " *** " + " ".join(self._allowed))
         print("Correct: " + " ".join(sorted(self._usercorrect.keys())))
         score = sum([len(key) for key in self._usercorrect.keys()])
         print("Score: " + str(score))
 
+    def welcome(self):
+        print(SpellingWasp.SEPARATOR)
+        print("Bzz! Welcome to Spelling Wasp!")
+        print("Unlike a Spelling Bee, we can sting you multiple times in a day")
+
+    def help(self):
+        print("Form a word from the allowed letters.")
+        print("The word must contain the highlighted key letter " + self._key)
+        print("Letters may be repeated.")
+        print("You may type the word in upper or lower case")
+        print("Type ? to see this help message again.")
+        print("Type Space to shuffle the letters around")
+        print("Type Enter only to end the game and see the solutions")
+
     def play(self):
+        self.welcome()
         self.status()
-        guess = input("... Try a word, or press Enter to quit >>> ")
+        guess = input("... Try a word / [Space] shuffle / [?] help / [Enter] quit >>> ")
         while guess != "":
+            # Shuffle letters if user types Space
             if guess == " ":
                 self._allowed = "".join(random.sample(self._allowed, len(self._allowed)))
                 self.status()
+            elif guess == "?":
+                self.help()
+            # Check the guess
             else:
                 guess = guess.upper()
                 if guess in self._usercorrect.keys() and self._usercorrect[guess] > 0:
-                    print("--------------------------------------------------------------")
+                    print(SpellingWasp.SEPARATOR)
                     print("Correct, but you have already played that word "+str(self._usercorrect[guess]) + " times")
                     self._usercorrect[guess] += 1
                 elif guess in self._userwrong.keys() and self._userwrong[guess] > 0:
-                    print("--------------------------------------------------------------")
+                    print(SpellingWasp.SEPARATOR)
                     print("Word not in dictionary, and you have already tried it "+str(self._userwrong[guess]) + " times")
                     self._userwrong[guess] += 1
                 else:
                     if guess in self._solutions:
                         self._usercorrect[guess] += 1
-                        print("--------------------------------------------------------------")
+                        print(SpellingWasp.SEPARATOR)
                         print(encourage())
                     else:
                         self._userwrong[guess] += 1
-                        print("--------------------------------------------------------------")
+                        print(SpellingWasp.SEPARATOR)
                         print(discourage())
                     self.status()
-            guess = input("... Try a word, or press Enter to quit >>> ")
+            guess = input("... Try a word / [Space] shuffle / [?] help / [Enter] quit >>> ")
         # Goodbye message
-        print("--------------------------------------------------------------")
+        print(SpellingWasp.SEPARATOR)
         print("Thank you for playing Spelling Wasp")
         print("Words that you missed:")
         print(" ".join([word for word in self._solutions if word not in self._usercorrect.keys()]))
-        print("--------------------------------------------------------------")
+        print(SpellingWasp.SEPARATOR)
 
 # Main
 # Read dictionary
@@ -127,5 +148,5 @@ words=[]
 with open(args.dict, "r") as fh:
     words = [word.rstrip().upper() for word in fh]
 # Play the game
-game = SpellingBee(args.n, args.minsolutions, args.min, words)
+game = SpellingWasp(args.n, args.minsolutions, args.min, words)
 game.play()
