@@ -25,6 +25,7 @@ def all_solutions(key,allowed,min_wordlength,wordlist):
                     scores += 1
             if scores == 0 and len(word) >= min_wordlength:
                 solutions.append(word)
+    solutions = set(solutions) # Convert to set to take only unique elements
     return(solutions)
 
 def encourage():
@@ -62,6 +63,7 @@ class SpellingWasp(object):
             num_solutions = len(self._solutions)
         self._usercorrect = defaultdict(int)
         self._userwrong = defaultdict(int)
+        self._numsolutions = num_solutions
 
     def dump(self):
         print("key:\t" + self._key)
@@ -78,7 +80,7 @@ class SpellingWasp(object):
         print("Letters: *** " + self._key + " *** " + " ".join(self._allowed))
         print("Correct: " + " ".join(sorted(self._usercorrect.keys())))
         score = sum([len(key) for key in self._usercorrect.keys()])
-        print("Score: " + str(score))
+        print("Score: " + str(score) + " / Unguessed: " + str(self._numsolutions - len(self._usercorrect.keys())))
 
     def status(self):
         """Return current status of game"""
@@ -126,7 +128,8 @@ class SpellingWasp(object):
                 self._userwrong[guess] += 1
                 result = "wrong_new"
                 message = discourage()
-        return(result, message)
+        unguessed = self._numsolutions - len(self._usercorrect.keys())
+        return(result, message, unguessed)
 
     def play(self):
         self.welcome()
@@ -141,11 +144,15 @@ class SpellingWasp(object):
                 self.help()
             # Check the guess
             else:
-                result, message = self.process_guess(guess)
+                result, message, unguessed = self.process_guess(guess)
                 print(SpellingWasp.SEPARATOR)
                 print(message)
                 if result in ["correct_new", "wrong_new"]:
                     self.print_status()
+                if unguessed == 0:
+                    print ("You have guessed all the words! Wow!")
+                    self.goodbye()
+                    break
             guess = input("... Try a word / [Space] shuffle / [?] help / [Enter] quit >>> ")
         self.goodbye()
 
