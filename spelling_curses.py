@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+from textwrap import wrap
 import curses
 from curses import wrapper
 import string
@@ -21,7 +22,7 @@ lowpoints = [ord(i) for i in string.ascii_lowercase]
 def show_header(stdscr):
     """Static header"""
     stdscr.hline(0,0,"-",50)
-    stdscr.addstr(1,0, "* * * * * S P E L L I N G * W A S P * * * * *")
+    stdscr.addstr(1,0, " - - - - - S P E L L I N G  *  W A S P - - - - - ")
     stdscr.hline(2,0,"-",50)
     stdscr.addstr(3,0, "Type word then [Enter] to submit")
     stdscr.addstr(4,0, "[Backspace] cancel word") 
@@ -34,11 +35,17 @@ def show_status(stdscr,game):
     """Update and display score"""
     key, allowed, correctwords, score = game.status()
     stdscr.hline(10,0,"-",50)
-    stdscr.addstr(11,0, "letters: *** " + key + " *** " + allowed)
-    stdscr.addstr(12,0, "score: " + str(score))
+    stdscr.addstr(11,0, "letters: *** " + key + " *** " + " ".join(allowed))
+    stdscr.addstr(12,0, "score: " + str(score) + " | unguessed: " + str(game._numsolutions - len(game._usercorrect)))
     stdscr.hline(13,0,"-",50)
     stdscr.addstr(14,0, "correct guesses: ")
-    stdscr.addstr(15,0, " ".join(correctwords))
+    # Report correctly guessed words, but wrap the string if the
+    # list gets too long
+    correctstr  = " ".join(correctwords)
+    correctwrap = wrap(correctstr, 50)
+    for i in range(0,len(correctwrap)):
+        stdscr.addstr(15+i,0, correctwrap[i])
+    
    
 def main(stdscr):
     # Read dictionary
@@ -71,7 +78,7 @@ def main(stdscr):
             joinword = "".join(wordbuffer)
             stdscr.addstr(8,4, joinword)
             wordbuffer = []
-            result, message = game.process_guess(joinword)
+            result, message, unguessed = game.process_guess(joinword)
             stdscr.addstr(9,0, message)
             show_status(stdscr,game)
         else:
