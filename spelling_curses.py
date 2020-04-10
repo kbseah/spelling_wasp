@@ -58,7 +58,7 @@ def exit_report(stdscr,game):
     stdscr.addstr(6,0, "final score: " + str(score))
     stdscr.hline(7,0, "-", 50)
     stdscr.addstr(8,0, "These are the words you didn't guess:")
-    unguessedstr = " ".join([word for word in game._solutions if word not in game._usercorrect.keys()])
+    unguessedstr = " ".join(sorted([word for word in game._solutions if word not in game._usercorrect.keys()]))
     unguessedwrap = wrap(unguessedstr, 50)
     for i in range(0,len(unguessedwrap)):
         stdscr.addstr(9+i,0, unguessedwrap[i])
