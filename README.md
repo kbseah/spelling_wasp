@@ -20,5 +20,6 @@ An alternative is the SOWPODS word list ([download link](https://www.wordgamedic
 ## To-do
 
  - [ ] Support characters beyond the ASCII set, for other languages
+ - [ ] Add some kind of evaluation to scoring system, and ask user if they want to continue beyond 100 points
  - [ ] Save the game results to a log file
  - [ ] Add colors to the interface
