@@ -9,6 +9,8 @@ Spelling Wasp is a clone of Spelling Bee, which lets you have some additional co
 ```bash
 python3 spelling_wasp.py # play with default settings
 python3 spelling_wasp.py -h # help message and full option list
+python3 spelling_wasp.py -f # play in fullscreen mode
+python3 spelling_wasp.py --dict my_dictionary.txt # specify your own word list
 ```
 
 ## Dictionary
@@ -16,6 +18,10 @@ python3 spelling_wasp.py -h # help message and full option list
 By default looks in `/usr/share/dict/words` for a word list. However the default word lists that ship with your OS may not be very good. 
 
 An alternative is the SOWPODS word list ([download link](https://www.wordgamedictionary.com/sowpods/download/sowpods.txt)), but you will have to remove the first few lines of explanatory text from the file.
+
+## Full-screen mode
+
+To play the full screen mode you will need the `curses` module in Python. This should be bundled by default in Linux and Mac OS X, but on Windows you may have to install [windows-curses](https://pypi.org/project/windows-curses/) by yourself first.
 
 ## To-do
 
