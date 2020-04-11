@@ -133,7 +133,7 @@ def main_fullscreen(stdscr):
             wordbuffer.append(char)
             stdscr.addstr(8,4,"".join(wordbuffer))
         elif c == ord("?"):
-            stdscr.addstr(9,0, "[help message]")
+            stdscr.addstr(9,0, wasp_facts())
         elif c == ord("!"):
             stdscr.addstr(9,0, "Hint: " + game.hint())
         elif c == ord(" "):

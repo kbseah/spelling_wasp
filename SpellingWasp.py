@@ -38,6 +38,16 @@ def discourage():
     discouragement = ["Nope", "No", "Wrong", "Sorry", "Meh", "Are you kidding me?"]
     return(random.sample(discouragement,1)[0])
 
+def wasp_facts():
+    facts = ["Parasitoid wasps lay eggs in living hosts, eventually killing them",
+             "Bees and ants actually evolved from wasp ancestors",
+             "The sting of a wasp is actually a modified ovipositor",
+             "Social wasps live in nests with a queen and sister workers",
+             "Most wasp species are solitary and don't live in nests",
+             "Male wasps develop from unfertilized eggs",
+             "Figs need tiny fig wasps to fertilize their fruit"]
+    return(random.choice(facts))
+
 class SpellingWasp(object):
     """SpellingWasp game"""
 
