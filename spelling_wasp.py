@@ -6,6 +6,7 @@ import string
 import json # for dump
 import unicodedata
 import curses
+import time
 from curses import wrapper
 from textwrap import wrap
 from collections import defaultdict
@@ -34,11 +35,37 @@ def main_cli(args):
 upppoints = [ord(i) for i in string.ascii_uppercase]
 lowpoints = [ord(i) for i in string.ascii_lowercase]
 
-def fs_show_header(stdscr):
-    """Static header"""
+def fs_show_title(stdscr):
     stdscr.hline(0,0,"-",50)
     stdscr.addstr(1,0, " - - - - - S P E L L I N G  *  W A S P - - - - - ")
     stdscr.hline(2,0,"-",50)
+
+def fs_splash_screen(stdscr):
+    """Splash when starting the game"""
+    fs_show_title(stdscr)
+    stdscr.refresh()
+    curses.napms(500)
+    stdscr.addstr(3,0, "...Loading dictionary...")
+    stdscr.refresh()
+    curses.napms(500)
+    stdscr.addstr(4,0, "...Gesticulating spines...")
+    stdscr.refresh()
+    curses.napms(500)
+    stdscr.addstr(5,0, "...Recomporting buzzwords...")
+    stdscr.refresh()
+    for i in range(0,50):
+        curses.napms(20)
+        stdscr.addstr(6,i, "-")
+        stdscr.refresh()
+    stdscr.addstr(7,0, "Bzz! Welcome to Spelling Wasp!")
+    stdscr.addstr(8,0, "Unlike a Spelling Bee, we can sting you multiple")
+    stdscr.addstr(9,0, "times in a day")
+    stdscr.addstr(10,0, " >>> Press any key to start playing <<<")
+    stdscr.refresh()
+
+def fs_show_header(stdscr):
+    """Static header"""
+    fs_show_title(stdscr)
     stdscr.addstr(3,0, "Type word then [Enter] to submit")
     stdscr.addstr(4,0, "[Backspace] cancel word / [!] hint") 
     stdscr.addstr(5,0, "[?] help / [Space] shuffle letters")
@@ -64,9 +91,7 @@ def fs_show_status(stdscr,game):
 def fs_exit_report(stdscr,game):
     """Report unguessed words and say goodbye"""
     key, allowed, correctwords, score = game.status()
-    stdscr.hline(0,0,"-",50)
-    stdscr.addstr(1,0, " - - - - - S P E L L I N G  *  W A S P - - - - - ")
-    stdscr.hline(2,0,"-",50)
+    fs_show_title(stdscr)
     stdscr.addstr(3,0, "Thank you for playing Spelling Wasp")
     stdscr.addstr(4,0, "Press any key to exit")
     stdscr.hline(5,0, "-", 50)
@@ -78,20 +103,23 @@ def fs_exit_report(stdscr,game):
     for i in range(0,len(unguessedwrap)):
         stdscr.addstr(9+i,0, unguessedwrap[i])
 
-
 def main_fullscreen(stdscr):
     """Full-screen version of the game, which requires curses module"""
+    # Initialize screen
+    stdscr.clear()
+    fs_show_title(stdscr)
+    stdscr.refresh()
     # Read dictionary
     words=[]
     with open(args.dict, "r") as fh:
         words = [word.rstrip().upper() for word in fh]
     game = SpellingWasp(args.n, args.minsolutions, args.min, words)
-    # Initialize screen
-    stdscr.clear()
     while True:
-        stdscr.addstr(0,0, "Press any key to continue")
+        # Splash screen
+        fs_splash_screen(stdscr)
         v = stdscr.getch()
         break
+    stdscr.clear()
     fs_show_header(stdscr)
     fs_show_status(stdscr,game)
     wordbuffer = []
@@ -107,7 +135,7 @@ def main_fullscreen(stdscr):
         elif c == ord("?"):
             stdscr.addstr(9,0, "[help message]")
         elif c == ord("!"):
-            stdscr.addstr(9,0, game.hint())
+            stdscr.addstr(9,0, "Hint: " + game.hint())
         elif c == ord(" "):
             game.shuffle_letters()
             fs_show_status(stdscr,game)
@@ -135,6 +163,7 @@ def main_fullscreen(stdscr):
             wordbuffer = []
             stdscr.addstr(8,4, "".join(wordbuffer))
 
+# Main
 if args.fullscreen:
     wrapper(main_fullscreen)
 else:
