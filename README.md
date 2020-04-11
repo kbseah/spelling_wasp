@@ -23,3 +23,5 @@ An alternative is the SOWPODS word list ([download link](https://www.wordgamedic
  - [ ] Add some kind of evaluation to scoring system, and ask user if they want to continue beyond 100 points
  - [ ] Save the game results to a log file
  - [ ] Add colors to the interface
+ - [x] Give hints
+ - [ ] Progress bar 

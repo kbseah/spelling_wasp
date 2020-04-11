@@ -40,8 +40,8 @@ def fs_show_header(stdscr):
     stdscr.addstr(1,0, " - - - - - S P E L L I N G  *  W A S P - - - - - ")
     stdscr.hline(2,0,"-",50)
     stdscr.addstr(3,0, "Type word then [Enter] to submit")
-    stdscr.addstr(4,0, "[Backspace] cancel word") 
-    stdscr.addstr(5,0, "[?] help, [Space] shuffle letters")
+    stdscr.addstr(4,0, "[Backspace] cancel word / [!] hint") 
+    stdscr.addstr(5,0, "[?] help / [Space] shuffle letters")
     stdscr.addstr(6,0, "[Enter] without letters - quit")
     stdscr.hline(7,0,"-",50)
     stdscr.addstr(8,0, ">>> ")
@@ -88,6 +88,10 @@ def main_fullscreen(stdscr):
     game = SpellingWasp(args.n, args.minsolutions, args.min, words)
     # Initialize screen
     stdscr.clear()
+    while True:
+        stdscr.addstr(0,0, "Press any key to continue")
+        v = stdscr.getch()
+        break
     fs_show_header(stdscr)
     fs_show_status(stdscr,game)
     wordbuffer = []
@@ -102,6 +106,8 @@ def main_fullscreen(stdscr):
             stdscr.addstr(8,4,"".join(wordbuffer))
         elif c == ord("?"):
             stdscr.addstr(9,0, "[help message]")
+        elif c == ord("!"):
+            stdscr.addstr(9,0, game.hint())
         elif c == ord(" "):
             game.shuffle_letters()
             fs_show_status(stdscr,game)

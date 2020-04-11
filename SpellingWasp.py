@@ -107,6 +107,17 @@ class SpellingWasp(object):
         print("Type Space to shuffle the letters around")
         print("Type Enter only to end the game and see the solutions")
 
+    def hint(self):
+        """Give a hint for one of the unguessed words"""
+        # Use set for set operation, back to list for random sampling
+        pick = random.choice(list(self._solutions - set(self._usercorrect.keys()))) 
+        pick = list(pick)
+        # Blank out randomly a third of the letters
+        blankpos = random.sample(range(0,len(pick)), int(len(pick)/3))
+        for i in blankpos:
+            pick[i] = '-'
+        return("".join(pick))
+
     def process_guess(self, guess):
         guess = guess.upper()
         result = ""
@@ -134,7 +145,7 @@ class SpellingWasp(object):
     def play(self):
         self.welcome()
         self.print_status()
-        guess = input("... Try a word / [Space] shuffle / [?] help / [Enter] quit >>> ")
+        guess = input("... Try a word / [Space] shuffle / [?] help / [!] hint / [Enter] quit >>> ")
         while guess != "":
             # Shuffle letters if user types Space
             if guess == " ":
@@ -142,6 +153,9 @@ class SpellingWasp(object):
                 self.print_status()
             elif guess == "?":
                 self.help()
+            elif guess == "!":
+                hintword = self.hint()
+                print("Hint: "+hintword)
             # Check the guess
             else:
                 result, message, unguessed = self.process_guess(guess)
@@ -153,7 +167,7 @@ class SpellingWasp(object):
                     print ("You have guessed all the words! Wow!")
                     self.goodbye()
                     break
-            guess = input("... Try a word / [Space] shuffle / [?] help / [Enter] quit >>> ")
+            guess = input("... Try a word / [Space] shuffle / [?] help / [!] hint / [Enter] quit >>> ")
         self.goodbye()
 
     def goodbye(self):
