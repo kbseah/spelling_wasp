@@ -4,6 +4,8 @@ The NY Times [Spelling Bee](https://www.nytimes.com/puzzles/spelling-bee) game i
 
 Spelling Wasp is a clone of Spelling Bee, which lets you have some additional control over the configuration and dictionary. You can even play it in other languages, as long as you have a word list for that language (for now only ASCII characters are supported). What's more, you can play new puzzles as often as you like.
 
+![](screenshot_game.png)
+
 ## Usage
 
 ```bash
