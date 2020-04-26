@@ -29,7 +29,10 @@ To play the full screen mode you will need the `curses` module in Python. This s
 
  - [ ] Support characters beyond the ASCII set, for other languages
  - [ ] Add some kind of evaluation to scoring system, and ask user if they want to continue beyond 100 points
+ - [ ] Bonus points when correctly guessed word contains all the letters
  - [ ] Save the game results to a log file
  - [ ] Add colors to the interface
  - [x] Give hints
  - [ ] Progress bar 
+ - [ ] Ask confirmation before quitting
+ - [ ] Fix bug when list of words guessed /unguessed longer than screen
