@@ -14,11 +14,12 @@ from SpellingWasp import *
 
 parser = argparse.ArgumentParser(description="Spelling Wasp! A venomous clone of the NY Times Spelling Bee",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("--dict", default="/usr/share/dict/web2", help="Path to dictionary file")
+parser.add_argument("--dict", "-d", default="/usr/share/dict/web2", help="Path to dictionary file")
 parser.add_argument("-n", default=7, help="Number of letters to play")
 parser.add_argument("--min", default=4, help="Minimum length of a word to accept")
 parser.add_argument("--minsolutions", default=50, help="Minimum number of solutions that a letter combination must have")
 parser.add_argument("--fullscreen", "-f", action="store_true", help="Play in fullscreen mode (requires python curses module)")
+parser.add_argument("--skip_splash", "-s", action="store_true", help="Skip splash screen in fullscreen mode")
 args = parser.parse_args()
 
 def main_cli(args):
@@ -114,11 +115,12 @@ def main_fullscreen(stdscr):
     with open(args.dict, "r") as fh:
         words = [word.rstrip().upper() for word in fh]
     game = SpellingWasp(args.n, args.minsolutions, args.min, words)
-    while True:
-        # Splash screen
-        fs_splash_screen(stdscr)
-        v = stdscr.getch()
-        break
+    if not args.skip_splash:
+        while True:
+            # Splash screen
+            fs_splash_screen(stdscr)
+            v = stdscr.getch()
+            break
     stdscr.clear()
     fs_show_header(stdscr)
     fs_show_status(stdscr,game)
